@@ -14,6 +14,7 @@ namespace Mono.WebServer.Http
 		private volatile bool shutdown=false;
 		private ManualResetEvent allDone=new ManualResetEvent(false);
 		private AsyncCallback accept;
+		List<NetworkConnector> connectors=new List<NetworkConnector>();
 
 		public Server ()
 		{
@@ -84,6 +85,11 @@ namespace Mono.WebServer.Http
 			// Additional code to read data goes here.
 			NetworkConnector connector = new NetworkConnector(client);
 			connector.Disconnected += OnDisconnect;
+
+			//this line for save reference to connector in .NET
+			//and prevent to collecting it by GC
+			//uncomment it to produce socket leaks 
+			//connectors.Add (connector);
 
 			connector.Receive();
 		}
